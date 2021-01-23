@@ -14,13 +14,33 @@ const DefaultFilePath = "./config.json"
 
 //AppConfig This struct is the configuration for the REST server
 type AppConfig struct {
+	//Inherit from Interface
 	appconfint.IAppConfig
+
+	//Items for storage
+	Items map[string]interface{} `json:"Items,omitempty"`
 }
 
 //NewAppConfig creates a new configuation with default settings
 func NewAppConfig() appconfint.IAppConfig {
 	Config := AppConfig{}
+	Config.Items = make(map[string]interface{})
 	return &Config
+}
+
+//GetItem gets the data fr that keyed item
+func (rsc *AppConfig) GetItem(key string) interface{} {
+	return Config.Items[key]
+}
+
+//SetItem sets the data for this keyed item
+func (rsc *AppConfig) SetItem(key string, data interface{}) {
+	Config.Items[key] = data
+}
+
+//SetDefaults sets the defaults this is a noop
+func (rsc *AppConfig) SetDefaults() {
+
 }
 
 //Save This saves the configuration from a file path
