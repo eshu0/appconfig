@@ -29,23 +29,23 @@ func NewAppConfig() appconfint.IAppConfig {
 }
 
 //GetItem gets the data fr that keyed item
-func (rsc *AppConfig) GetItem(key string) interface{} {
+func (Config *AppConfig) GetItem(key string) interface{} {
 	return Config.Items[key]
 }
 
 //SetItem sets the data for this keyed item
-func (rsc *AppConfig) SetItem(key string, data interface{}) {
+func (Config *AppConfig) SetItem(key string, data interface{}) {
 	Config.Items[key] = data
 }
 
 //SetDefaults sets the defaults this is a noop
-func (rsc *AppConfig) SetDefaults() {
+func (Config *AppConfig) SetDefaults() {
 
 }
 
 //Save This saves the configuration from a file path
-func (rsc *AppConfig) Save(ConfigFilePath string) error {
-	bytes, err1 := json.MarshalIndent(rsc, "", "\t") //json.Marshal(p)
+func (Config *AppConfig) Save(ConfigFilePath string) error {
+	bytes, err1 := json.MarshalIndent(Config, "", "\t") //json.Marshal(p)
 	if err1 != nil {
 		//Log.LogErrorf("SaveToFile()", "Marshal json for %s failed with %s ", ConfigFilePath, err1.Error())
 		return err1
@@ -62,17 +62,17 @@ func (rsc *AppConfig) Save(ConfigFilePath string) error {
 }
 
 //Load This loads the configuration from a file path
-func (rsc *AppConfig) Load(ConfigFilePath string) (appconfint.IAppConfig, error) {
-	ok, err := rsc.checkFileExists(ConfigFilePath)
+func (Config *AppConfig) Load(ConfigFilePath string) (appconfint.IAppConfig, error) {
+	ok, err := Config.checkFileExists(ConfigFilePath)
 	if ok {
 		bytes, err1 := ioutil.ReadFile(ConfigFilePath) //ReadAll(jsonFile)
 		if err1 != nil {
 			return nil, fmt.Errorf("Reading '%s' failed with %s ", ConfigFilePath, err1.Error())
 		}
 
-		rserverconfig := RServerConfig{}
+		appconfig := AppConfig{}
 
-		err2 := json.Unmarshal(bytes, &rserverconfig)
+		err2 := json.Unmarshal(bytes, &appconfig)
 
 		if err2 != nil {
 			return nil, fmt.Errorf("Loading %s failed with %s ", ConfigFilePath, err2.Error())
@@ -80,7 +80,7 @@ func (rsc *AppConfig) Load(ConfigFilePath string) (appconfint.IAppConfig, error)
 
 		//Log.LogDebugf("LoadFile()", "Read Port %s ", rserverconfig.Port)
 		//rs.Log.LogDebugf("LoadFile()", "Port in config %s ", rs.Config.Port)
-		return &rserverconfig, nil
+		return &appconfig, nil
 	}
 
 	if err != nil {
@@ -90,7 +90,7 @@ func (rsc *AppConfig) Load(ConfigFilePath string) (appconfint.IAppConfig, error)
 	return nil, fmt.Errorf("'%s' was not found to load", ConfigFilePath)
 }
 
-func (rsc *RServerConfig) checkFileExists(filename string) (bool, error) {
+func (Config *AppConfig) checkFileExists(filename string) (bool, error) {
 	info, err := os.Stat(filename)
 	if os.IsNotExist(err) {
 		return false, err
