@@ -2,6 +2,7 @@ package appconf
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 
@@ -16,7 +17,7 @@ type AppConfig struct {
 	appconfint.IAppConfig
 }
 
-//NewRServerConfig creates a new server configuation with default settings
+//NewAppConfig creates a new configuation with default settings
 func NewAppConfig() appconfint.IAppConfig {
 	Config := AppConfig{}
 	return &Config
@@ -46,33 +47,27 @@ func (rsc *AppConfig) Load(ConfigFilePath string) (appconfint.IAppConfig, error)
 	if ok {
 		bytes, err1 := ioutil.ReadFile(ConfigFilePath) //ReadAll(jsonFile)
 		if err1 != nil {
-			//Log.LogErrorf("LoadFile()", "Reading '%s' failed with %s ", ConfigFilePath, err1.Error())
-			return nil, err1
+			return nil, fmt.Errorf("Reading '%s' failed with %s ", ConfigFilePath, err1.Error())
 		}
 
-		rserverconfig := AppConfig{}
+		rserverconfig := RServerConfig{}
 
 		err2 := json.Unmarshal(bytes, &rserverconfig)
 
 		if err2 != nil {
-			//Log.LogErrorf("LoadFile()", " Loading %s failed with %s ", ConfigFilePath, err2.Error())
-			return nil, err2
+			return nil, fmt.Errorf("Loading %s failed with %s ", ConfigFilePath, err2.Error())
 		}
 
 		//Log.LogDebugf("LoadFile()", "Read Port %s ", rserverconfig.Port)
 		//rs.Log.LogDebugf("LoadFile()", "Port in config %s ", rs.Config.Port)
-
 		return &rserverconfig, nil
-	} else {
-		/*
-			if err != nil {
-				Log.LogErrorf("LoadFile()", "'%s' was not found to load with error: %s", ConfigFilePath, err.Error())
-			} else {
-				Log.LogErrorf("LoadFile()", "'%s' was not found to load", ConfigFilePath)
-			}
-		*/
-		return nil, err
 	}
+
+	if err != nil {
+		return nil, fmt.Errorf("'%s' was not found to load with error: %s", ConfigFilePath, err.Error())
+	}
+
+	return nil, fmt.Errorf("'%s' was not found to load", ConfigFilePath)
 }
 
 func (rsc *RServerConfig) checkFileExists(filename string) (bool, error) {
