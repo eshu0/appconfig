@@ -82,5 +82,5 @@ func (ach *AppConfigHelper) Load() error {
 		ach.LoadedConfig = ccat
 		return nil
 	}
-	return fmt.Errorf("Cast failed")
+	return fmt.Errorf("AppConfig cast failed")
 }
