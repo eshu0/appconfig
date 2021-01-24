@@ -2,14 +2,12 @@ package appconf
 
 import (
 	"fmt"
-
-	appconf "github.com/eshu0/appconfig/pkg"
 )
 
 //AppConfigHelper This struct is a helper forstoring config
 type AppConfigHelper struct {
-	Config   *appconf.AppConfig `json:"-"`
-	FilePath string             `json:"-"`
+	Config   *AppConfig `json:"-"`
+	FilePath string     `json:"-"`
 }
 
 //NewAppConfigHelper creates new server config
@@ -21,7 +19,7 @@ func NewAppConfigHelper() *AppConfigHelper {
 func NewAppConfigHelperWithDefaults(DefaultFunc func()) *AppConfigHelper {
 	conf := NewAppConfig()
 	dc := &AppConfigHelper{}
-	Config, ok := conf.(*appconf.AppConfig)
+	Config, ok := conf.(*AppConfig)
 	if ok {
 		dc.Config = Config
 		if DefaultFunc != nil {
@@ -71,7 +69,7 @@ func (ach *AppConfigHelper) Load() error {
 		return fmt.Errorf("Loading resulted with a nil")
 	}
 
-	ccat, ok := newconfig.(*appconf.AppConfig)
+	ccat, ok := newconfig.(*AppConfig)
 	if ok {
 		ach.Config = ccat
 		return nil
