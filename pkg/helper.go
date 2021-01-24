@@ -8,8 +8,8 @@ import (
 
 //AppConfigHelper This struct is a helper forstoring config
 type AppConfigHelper struct {
-	Config   *AppConfig `json:"-"`
-	FilePath string     `json:"-"`
+	LoadedConfig *AppConfig `json:"-"`
+	FilePath     string     `json:"-"`
 }
 
 //NewAppConfigHelper creates new server config
@@ -30,9 +30,9 @@ func NewAppConfigHelperWithDefault(filepath string, DefaultFunc func(Config appc
 	dc.FilePath = filepath
 	Config, ok := conf.(*AppConfig)
 	if ok {
-		dc.Config = Config
+		dc.LoadedConfig = Config
 		if DefaultFunc != nil {
-			dc.Config.SetDefaultFunc(DefaultFunc)
+			dc.LoadedConfig.SetDefaultFunc(DefaultFunc)
 		}
 		return dc
 	}
@@ -43,15 +43,15 @@ func NewAppConfigHelperWithDefault(filepath string, DefaultFunc func(Config appc
 //Save saves config to disk
 func (ach *AppConfigHelper) Save() error {
 
-	if ach.Config == nil {
-		return fmt.Errorf("Config was nil")
+	if ach.LoadedConfig == nil {
+		return fmt.Errorf("Loaded Config was nil")
 	}
 
 	if len(ach.FilePath) <= 0 {
 		return fmt.Errorf("Config File Path was not set could not save")
 	}
 
-	if err := ach.Config.Save(ach.FilePath); err != nil {
+	if err := ach.LoadedConfig.Save(ach.FilePath); err != nil {
 		return err
 	}
 	return nil
@@ -60,15 +60,15 @@ func (ach *AppConfigHelper) Save() error {
 //Load loads server config from disk
 func (ach *AppConfigHelper) Load() error {
 
-	if ach.Config == nil {
-		return fmt.Errorf("Config was nil")
+	if ach.LoadedConfig == nil {
+		return fmt.Errorf("Loaded Config was nil")
 	}
 
 	if len(ach.FilePath) <= 0 {
 		return fmt.Errorf("Config File Path was not set could not load")
 	}
 
-	newconfig, err := ach.Config.Load(ach.FilePath)
+	newconfig, err := ach.LoadedConfig.Load(ach.FilePath)
 	if err != nil {
 		return err
 	}
