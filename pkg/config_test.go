@@ -147,6 +147,7 @@ func TestLoadDummy(t *testing.T) {
 
 		if ok {
 			ccat.SetItem("Banana1", "Monkey2")
+
 			return
 		}
 
