@@ -13,14 +13,15 @@ type AppConfigHelper struct {
 }
 
 //NewAppConfigHelper creates new server config
-func NewAppConfigHelper() *AppConfigHelper {
-	return NewAppConfigHelperWithDefault(nil)
+func NewAppConfigHelper(filepath string) *AppConfigHelper {
+	return NewAppConfigHelperWithDefault(filepath, nil)
 }
 
 //NewAppConfigHelperWithDefault creates new apphelper with default function
-func NewAppConfigHelperWithDefault(DefaultFunc func(Config appconfint.IAppConfig)) *AppConfigHelper {
+func NewAppConfigHelperWithDefault(filepath string, DefaultFunc func(Config appconfint.IAppConfig)) *AppConfigHelper {
 	conf := NewAppConfig()
 	dc := &AppConfigHelper{}
+	dc.FilePath = filepath
 	Config, ok := conf.(*AppConfig)
 	if ok {
 		dc.Config = Config
