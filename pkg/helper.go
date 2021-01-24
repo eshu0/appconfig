@@ -69,6 +69,9 @@ func (ach *AppConfigHelper) Load() error {
 	}
 
 	newconfig, err := ach.LoadedConfig.Load(ach.FilePath)
+
+	fmt.Printf("newconfig %v\n", newconfig)
+
 	if err != nil {
 		return err
 	}
@@ -78,6 +81,8 @@ func (ach *AppConfigHelper) Load() error {
 	}
 
 	ccat, ok := newconfig.(*AppConfig)
+	fmt.Printf("ccat %v\n", ccat)
+
 	if ok {
 		ach.LoadedConfig = ccat
 		return nil

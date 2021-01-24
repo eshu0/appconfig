@@ -9,11 +9,16 @@ import (
 	appconfint "github.com/eshu0/appconfig/pkg/interfaces"
 )
 
-//DefaultFilePath is the default path for the server config
+//DefaultFilePath is the default path for the configuration file
 const DefaultFilePath = "./config.json"
+
+//DefaultVersion the default version of the config
+const DefaultVersion = "0.0.0.1"
 
 //AppConfig This struct is the configuration for the REST server
 type AppConfig struct {
+	Version string `json:"version,omitempty"`
+
 	//Inherit from Interface
 	appconfint.IAppConfig `json:"-"`
 
@@ -26,6 +31,7 @@ type AppConfig struct {
 //NewAppConfig creates a new configuation with default settings
 func NewAppConfig() appconfint.IAppConfig {
 	Config := &AppConfig{}
+	Config.Version = DefaultVersion
 	Config.Items = make(map[string]interface{})
 	return Config
 }
@@ -56,13 +62,11 @@ func (Config *AppConfig) SetDefaultFunc(f func(Config appconfint.IAppConfig)) {
 func (Config *AppConfig) Save(ConfigFilePath string) error {
 	bytes, err1 := json.MarshalIndent(Config, "", "\t") //json.Marshal(p)
 	if err1 != nil {
-		//Log.LogErrorf("SaveToFile()", "Marshal json for %s failed with %s ", ConfigFilePath, err1.Error())
 		return err1
 	}
 
 	err2 := ioutil.WriteFile(ConfigFilePath, bytes, 0644)
 	if err2 != nil {
-		//Log.LogErrorf("SaveToFile()", "Saving %s failed with %s ", ConfigFilePath, err2.Error())
 		return err2
 	}
 
