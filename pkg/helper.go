@@ -55,7 +55,7 @@ func (ach *AppConfigHelper) Save() error {
 func (ach *AppConfigHelper) Load() error {
 
 	if ach.Config == nil {
-		return fmt.Errorf("Config Parent was nil")
+		return fmt.Errorf("Config was nil")
 	}
 
 	if len(ach.FilePath) <= 0 {
