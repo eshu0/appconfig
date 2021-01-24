@@ -118,13 +118,38 @@ func SetDummyDefaults(Config appconfint.IAppConfig) {
 	Config.SetItem("Anotherdummy", []string{"dummy", "summy", "lummy"})
 }
 
-func TestDummy(t *testing.T) {
+func TestSaveDummy(t *testing.T) {
 	conf := NewDummyConfig()
 	if conf != nil {
 		err := conf.Parent.Save(DefaultFilePath)
 		if err != nil {
 			t.Fatalf(`Save(%s) = %v should not error`, DefaultFilePath, err)
 		}
+	} else {
+		t.Fatal(`NewDummyConfig is nil `)
+	}
+}
+
+func TestLoadDummy(t *testing.T) {
+	conf := NewDummyConfig()
+	if conf != nil {
+		err := conf.Parent.Save(DefaultFilePath)
+		if err != nil {
+			t.Fatalf(`Save(%s) = %v should not error`, DefaultFilePath, err)
+		}
+
+		newconfig, err := rs.Config.Parent.Load(DefaultFilePath)
+		if err != nil || newconfig == nil {
+			t.Fatalf(`Load(%s) = %v should not error`, DefaultFilePath, err)
+			return false
+		}
+		ccat, ok := newconfig.(*AppConfig)
+		if ok {
+			Config.SetItem("DummyItem", "Monkey3")
+
+		}
+		t.Fatal("LoadConfig Cast failed")
+
 	} else {
 		t.Fatal(`NewDummyConfig is nil `)
 	}
