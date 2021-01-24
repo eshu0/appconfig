@@ -9,7 +9,7 @@ import (
 // TestSave saves the config
 func TestSave(t *testing.T) {
 	conf := NewAppConfig()
-	conf.SetItem("Banana", "Monkey")
+	conf.SetData("Monkey")
 	err := conf.Save(DefaultFilePath)
 	if err != nil {
 		t.Fatalf(`Save(%s) = %v should not error`, DefaultFilePath, err)
@@ -20,7 +20,7 @@ func TestLoad(t *testing.T) {
 
 	// old config
 	conf := NewAppConfig()
-	conf.SetItem("Banana1", "Monkey1")
+	conf.SetData("Monkey1")
 
 	err := conf.Save(DefaultFilePath)
 	if err != nil {
@@ -32,14 +32,14 @@ func TestLoad(t *testing.T) {
 		t.Fatalf(`Load(%s) = %v should not error`, DefaultFilePath, err1)
 	}
 
-	monkey1 := newconf.GetItem("Banana1")
+	monkey1 := newconf.GetData()
 	Monkeystring, ok := monkey1.(string)
 
 	if !ok && Monkeystring != "Monkey1" {
 		t.Fatalf(`"Monkeystring != Monkey1 instead was %s`, Monkeystring)
 	}
 
-	newconf.SetItem("Banana1", "Monkey2")
+	newconf.SetData("Monkey2")
 	updatederr := newconf.Save(DefaultFilePath)
 	if updatederr != nil {
 		t.Fatalf(`Save(%s) = %v should not error`, DefaultFilePath, updatederr)
@@ -50,7 +50,7 @@ func TestUpdate(t *testing.T) {
 
 	// set config
 	conf := NewAppConfig()
-	conf.SetItem("Banana1", "Monkey1")
+	conf.SetData("Monkey1")
 
 	// save it
 	err := conf.Save(DefaultFilePath)
@@ -65,7 +65,7 @@ func TestUpdate(t *testing.T) {
 	}
 
 	// check new one was loaded
-	monkey1 := newconf.GetItem("Banana1")
+	monkey1 := newconf.GetData()
 	Monkeystring, ok := monkey1.(string)
 
 	if !ok && Monkeystring != "Monkey1" {
@@ -73,7 +73,7 @@ func TestUpdate(t *testing.T) {
 	}
 
 	// udate it
-	newconf.SetItem("Banana1", "Monkey2")
+	newconf.SetData("Monkey2")
 	updatederr := newconf.Save(DefaultFilePath)
 	if updatederr != nil {
 		t.Fatalf(`Save(%s) = %v should not error`, DefaultFilePath, updatederr)
@@ -85,7 +85,7 @@ func TestUpdate(t *testing.T) {
 		t.Fatalf(`Load(%s) = %v should not error`, DefaultFilePath, err1)
 	}
 
-	monkey2 := newconf.GetItem("Banana1")
+	monkey2 := newconf.GetData()
 	Monkeystring, ok = monkey2.(string)
 
 	if !ok && Monkeystring != "Monkey2" {
@@ -114,8 +114,8 @@ func NewDummyConfig() *DummyConfig {
 
 //SetDummyDefaults sets the defaults this is a noop
 func SetDummyDefaults(Config appconfint.IAppConfig) {
-	Config.SetItem("DummyItem", "Monkey3")
-	Config.SetItem("Anotherdummy", []string{"dummy", "summy", "lummy"})
+	Config.SetData("Monkey3")
+	//Config.SetData("Anotherdummy", []string{"dummy", "summy", "lummy"})
 }
 
 func TestSaveDummy(t *testing.T) {
@@ -146,8 +146,11 @@ func TestLoadDummy(t *testing.T) {
 		ccat, ok := newconfig.(*AppConfig)
 
 		if ok {
-			ccat.SetItem("Banana1", "Monkey2")
-
+			ccat.SetData("Monkey2")
+			err := conf.Parent.Save("./afterwards.json")
+			if err != nil {
+				t.Fatalf(`Save(%s) = %v should not error`, DefaultFilePath, err)
+			}
 			return
 		}
 
