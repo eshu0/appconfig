@@ -81,7 +81,7 @@ func (Config *AppConfig) Load(ConfigFilePath string) (appconfint.IAppConfig, err
 
 		appconfig := NewAppConfig()
 
-		err2 := json.Unmarshal(bytes, &appconfig)
+		err2 := json.Unmarshal(bytes, appconfig)
 
 		if err2 != nil {
 			return nil, fmt.Errorf("Loading %s failed with %s ", ConfigFilePath, err2.Error())
@@ -91,7 +91,7 @@ func (Config *AppConfig) Load(ConfigFilePath string) (appconfint.IAppConfig, err
 
 		//Log.LogDebugf("LoadFile()", "Read Port %s ", rserverconfig.Port)
 		//rs.Log.LogDebugf("LoadFile()", "Port in config %s ", rs.Config.Port)
-		return &appconfig, nil
+		return appconfig, nil
 	}
 
 	if err != nil {
