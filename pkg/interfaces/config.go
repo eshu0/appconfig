@@ -6,6 +6,6 @@ type IAppConfig interface {
 	Load(ConfigFilePath string) (IAppConfig, error)
 	SetDefaults()
 	SetDefaultFunc(f func(Config IAppConfig))
-	GetItem(key string) interface{}
-	SetItem(key string, data interface{})
+	GetData() interface{}
+	SetData(data interface{})
 }
