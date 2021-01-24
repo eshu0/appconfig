@@ -22,8 +22,8 @@ type AppConfig struct {
 	//Inherit from Interface
 	appconfint.IAppConfig `json:"-"`
 
-	//Items for storage
-	Items map[string]interface{} `json:"Items,omitempty"`
+	//Data for storage
+	Data interface{} `json:"Items,omitempty"`
 
 	DefaultFunction func(Config appconfint.IAppConfig) `json:"-"`
 }
@@ -32,18 +32,18 @@ type AppConfig struct {
 func NewAppConfig() appconfint.IAppConfig {
 	Config := &AppConfig{}
 	Config.Version = DefaultVersion
-	Config.Items = make(map[string]interface{})
+	Config.Data = nil
 	return Config
 }
 
-//GetItem gets the data fr that keyed item
-func (Config *AppConfig) GetItem(key string) interface{} {
-	return Config.Items[key]
+//GetData gets the data fr that keyed item
+func (Config *AppConfig) GetData() interface{} {
+	return Config.Data
 }
 
-//SetItem sets the data for this keyed item
-func (Config *AppConfig) SetItem(key string, data interface{}) {
-	Config.Items[key] = data
+//SetData sets the data for this keyed item
+func (Config *AppConfig) SetData(data interface{}) {
+	Config.Data = data
 }
 
 //SetDefaults sets the defaults based off the function
