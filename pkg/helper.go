@@ -19,6 +19,12 @@ func NewAppConfigHelper(filepath string) *AppConfigHelper {
 
 //NewAppConfigHelperWithDefault creates new apphelper with default function
 func NewAppConfigHelperWithDefault(filepath string, DefaultFunc func(Config appconfint.IAppConfig)) *AppConfigHelper {
+	// has a conifg file been provided?
+	if len(filepath) == 0 || filepath == "" {
+		// load this first
+		filepath = DefaultFilePath
+	}
+
 	conf := NewAppConfig()
 	dc := &AppConfigHelper{}
 	dc.FilePath = filepath
@@ -27,7 +33,6 @@ func NewAppConfigHelperWithDefault(filepath string, DefaultFunc func(Config appc
 		dc.Config = Config
 		if DefaultFunc != nil {
 			dc.Config.SetDefaultFunc(DefaultFunc)
-			dc.Config.SetDefaults()
 		}
 		return dc
 	}
