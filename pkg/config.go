@@ -79,7 +79,7 @@ func (Config *AppConfig) Load(ConfigFilePath string) (appconfint.IAppConfig, err
 			return nil, fmt.Errorf("Reading '%s' failed with %s ", ConfigFilePath, err1.Error())
 		}
 
-		appconfig := AppConfig{}
+		appconfig := NewAppConfig()
 
 		err2 := json.Unmarshal(bytes, &appconfig)
 
