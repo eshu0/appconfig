@@ -23,7 +23,7 @@ type AppConfig struct {
 	appconfint.IAppConfig `json:"-"`
 
 	//Data for storage
-	Data interface{} `json:"Items,omitempty"`
+	Data interface{} `json:"data,omitempty"`
 
 	DefaultFunction func(Config appconfint.IAppConfig) `json:"-"`
 }
