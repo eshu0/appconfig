@@ -2,6 +2,8 @@ package appconf
 
 import (
 	"fmt"
+
+	appconfint "github.com/eshu0/appconfig/pkg/interfaces"
 )
 
 //AppConfigHelper This struct is a helper forstoring config
@@ -15,8 +17,8 @@ func NewAppConfigHelper() *AppConfigHelper {
 	return NewAppConfigHelperWithDefault(nil)
 }
 
-//NewAppConfigHelperWithDefaults creates new apphelper with default function
-func NewAppConfigHelperWithDefaults(DefaultFunc func()) *AppConfigHelper {
+//NewAppConfigHelperWithDefault creates new apphelper with default function
+func NewAppConfigHelperWithDefault(DefaultFunc func(Config appconfint.IAppConfig)) *AppConfigHelper {
 	conf := NewAppConfig()
 	dc := &AppConfigHelper{}
 	Config, ok := conf.(*AppConfig)
