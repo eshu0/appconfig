@@ -97,6 +97,11 @@ type DummyConfig struct {
 	Parent *AppConfig
 }
 
+type DummyData struct {
+	DumbProperty   string   `json:"dumdum,omitempty"`
+	DumbProperties []string `json:"dumanddumer,omitempty"`
+}
+
 func NewDummyConfig() *DummyConfig {
 	conf := NewAppConfig()
 	dc := &DummyConfig{}
@@ -114,8 +119,10 @@ func NewDummyConfig() *DummyConfig {
 
 //SetDummyDefaults sets the defaults this is a noop
 func SetDummyDefaults(Config appconfint.IAppConfig) {
-	Config.SetData("Monkey3")
-	//Config.SetData("Anotherdummy", []string{"dummy", "summy", "lummy"})
+	dd := DummyData{}
+	dd.DumbProperty = "Monkey3"
+	dd.DumbProperties = []string{"dummy", "summy", "lummy"}
+	Config.SetData(dd)
 }
 
 func TestSaveDummy(t *testing.T) {
