@@ -87,6 +87,8 @@ func (Config *AppConfig) Load(ConfigFilePath string) (appconfint.IAppConfig, err
 			return nil, fmt.Errorf("Loading %s failed with %s ", ConfigFilePath, err2.Error())
 		}
 
+		fmt.Printf("appconfig %v\n", appconfig)
+
 		//Log.LogDebugf("LoadFile()", "Read Port %s ", rserverconfig.Port)
 		//rs.Log.LogDebugf("LoadFile()", "Port in config %s ", rs.Config.Port)
 		return &appconfig, nil
