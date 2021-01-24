@@ -79,7 +79,7 @@ func (ach *AppConfigHelper) Load() error {
 
 	ccat, ok := newconfig.(*AppConfig)
 	if ok {
-		ach.Config = ccat
+		ach.LoadedConfig = ccat
 		return nil
 	}
 	return fmt.Errorf("Cast failed")
