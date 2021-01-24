@@ -138,16 +138,18 @@ func TestLoadDummy(t *testing.T) {
 			t.Fatalf(`Save(%s) = %v should not error`, DefaultFilePath, err)
 		}
 
-		newconfig, err := rs.Config.Parent.Load(DefaultFilePath)
+		newconfig, err := conf.Parent.Load(DefaultFilePath)
 		if err != nil || newconfig == nil {
 			t.Fatalf(`Load(%s) = %v should not error`, DefaultFilePath, err)
-			return false
+			return
 		}
 		ccat, ok := newconfig.(*AppConfig)
-		if ok {
-			Config.SetItem("DummyItem", "Monkey3")
 
+		if ok {
+			ccat.SetItem("Banana1", "Monkey2")
+			return
 		}
+
 		t.Fatal("LoadConfig Cast failed")
 
 	} else {
