@@ -45,7 +45,7 @@ func NewDummyConfigController(filepath string) *DummyConfigController {
 }
 
 //Load Loads the config from disk
-func (rsc *DummyConfigController) Load() error {
+func (rsc *DummyConfigController) Load(t *testing.T) error {
 	fmt.Printf("conf before load %v\n", rsc.Helper.LoadedConfig)
 
 	// load the data
@@ -59,7 +59,7 @@ func (rsc *DummyConfigController) Load() error {
 	rsc.cache = nil
 
 	// this rebuilds the cache
-	rsc.GetConfigData()
+	rsc.GetConfigData(t)
 
 	fmt.Printf("conf after data config %v\n", rsc.Helper.LoadedConfig)
 
@@ -80,7 +80,7 @@ func (rsc *DummyConfigController) SetServerDefaultConfig(Config appconfint.IAppC
 }
 
 //GetConfigData returns the config data from the store
-func (rsc *DummyConfigController) GetConfigData() *ConfigData {
+func (rsc *DummyConfigController) GetConfigData(t *testing.T) *ConfigData {
 	if rsc.cache == nil {
 		fmt.Println("cache is nil")
 		data := rsc.Helper.LoadedConfig.GetData()
@@ -99,25 +99,27 @@ func (rsc *DummyConfigController) GetConfigData() *ConfigData {
 			return &Config1
 		}
 
-		Config2, ok2 := data.((map[string]*ConfigData))
-		if ok2 {
-			fmt.Printf("cast2 ok %v\n", Config2)
-		}
-
-		Config3, ok3 := data.((map[string]interface{}))
-		if ok3 {
-			fmt.Printf("cast3 ok %v\n", Config3)
-			for key, element := range Config3 {
-				fmt.Println("Key:", key, "=>", "Element:", element)
+		t.Fatalf(`GetConfigData %v should cast ok`, data)
+		/*
+			Config2, ok2 := data.((map[string]*ConfigData))
+			if ok2 {
+				fmt.Printf("cast2 ok %v\n", Config2)
 			}
-			Config4, ok4 := Config3["Data"].(*ConfigData)
-			if ok4 {
-				fmt.Printf("cast4 ok %v\n", Config4)
-				rsc.cache = Config4
-				return Config4
-			}
-		}
 
+			Config3, ok3 := data.((map[string]interface{}))
+			if ok3 {
+				fmt.Printf("cast3 ok %v\n", Config3)
+				for key, element := range Config3 {
+					fmt.Println("Key:", key, "=>", "Element:", element)
+				}
+				Config4, ok4 := Config3["Data"].(*ConfigData)
+				if ok4 {
+					fmt.Printf("cast4 ok %v\n", Config4)
+					rsc.cache = Config4
+					return Config4
+				}
+			}
+		*/
 		fmt.Printf("cast failed %v\n", Config)
 		return nil
 
@@ -141,107 +143,110 @@ func (rsc *DummyConfigController) SetConfigData(data *ConfigData) {
 }
 
 //HasTemplate returns if a teplate path has been set
-func (rsc *DummyConfigController) HasTemplate() bool {
-	d := rsc.GetConfigData()
+func (rsc *DummyConfigController) HasTemplate(t *testing.T) bool {
+	d := rsc.GetConfigData(t)
 	if d == nil {
-		return false
+		panic("HasTemplate - config data was nil")
 	}
 
 	return &(d.TemplateFilepath) != nil && len(d.TemplateFilepath) > 0
 }
 
 //GetTemplatePath returns the template path
-func (rsc *DummyConfigController) GetTemplatePath() string {
-	d := rsc.GetConfigData()
+func (rsc *DummyConfigController) GetTemplatePath(t *testing.T) string {
+	d := rsc.GetConfigData(t)
 	if d == nil {
-		return ""
+		panic("GetTemplatePath - config data was nil")
 	}
 	return d.TemplateFilepath
 }
 
 //GetCacheTemplates returns the cached template paths
-func (rsc *DummyConfigController) GetCacheTemplates() bool {
-	d := rsc.GetConfigData()
+func (rsc *DummyConfigController) GetCacheTemplates(t *testing.T) bool {
+	d := rsc.GetConfigData(t)
 	if d == nil {
-		return false
+		panic("GetCacheTemplates - config data was nil")
 	}
 	return d.CacheTemplates
 }
 
 //GetTemplateFileTypes returns the file types for the templates, such as .tmpl, .html
-func (rsc *DummyConfigController) GetTemplateFileTypes() []string {
-	d := rsc.GetConfigData()
+func (rsc *DummyConfigController) GetTemplateFileTypes(t *testing.T) []string {
+	d := rsc.GetConfigData(t)
 	if d == nil {
-		return []string{}
+		panic("GetTemplateFileTypes - config data was nil")
 	}
 	return d.TemplateFileTypes
 }
 
 //GetHandlersLen this gets length handlers
-func (rsc *DummyConfigController) GetHandlersLen() int {
-	d := rsc.GetConfigData()
+func (rsc *DummyConfigController) GetHandlersLen(t *testing.T) int {
+	d := rsc.GetConfigData(t)
 	if d == nil {
-		return -1
+		panic("GetHandlersLen - config data was nil")
 	}
 	return len(d.Handlers)
 }
 
 //GetHandlers this gets the handlers from the config
-func (rsc *DummyConfigController) GetHandlers() []ComplexData {
-	d := rsc.GetConfigData()
+func (rsc *DummyConfigController) GetHandlers(t *testing.T) []ComplexData {
+	d := rsc.GetConfigData(t)
 	if d == nil {
-		return []ComplexData{}
+		panic("GetHandlers - config data was nil")
 	}
 	return d.Handlers
 }
 
 //GetDefaultHandlers this gets the default handlers
-func (rsc *DummyConfigController) GetDefaultHandlers() []ComplexData {
-	d := rsc.GetConfigData()
+func (rsc *DummyConfigController) GetDefaultHandlers(t *testing.T) []ComplexData {
+	d := rsc.GetConfigData(t)
 	if d == nil {
-		return []ComplexData{}
+		panic("GetDefaultHandlers - config data was nil")
 	}
 	return d.DefaultHandlers
 }
 
 //GetDefaultHandlersLen this gets length default handlers
-func (rsc *DummyConfigController) GetDefaultHandlersLen() int {
-	d := rsc.GetConfigData()
+func (rsc *DummyConfigController) GetDefaultHandlersLen(t *testing.T) int {
+	d := rsc.GetConfigData(t)
 	if d == nil {
-		return -1
+		panic("GetDefaultHandlersLen - config data was nil")
 	}
 	return len(d.DefaultHandlers)
 }
 
 //GetAddress this gets the server address
-func (rsc *DummyConfigController) GetAddress() string {
-	d := rsc.GetConfigData()
+func (rsc *DummyConfigController) GetAddress(t *testing.T) string {
+	d := rsc.GetConfigData(t)
 	if d == nil {
-		//panic("config data was nil")
-		return ":7777"
+		panic("GetAddress - config data was nil")
 	}
 	return ":" + d.Port
 }
 
 //AddDefaultHandler this adds a default handler to the configuration
-func (rsc *DummyConfigController) AddDefaultHandler(Handler ComplexData) {
-	d := rsc.GetConfigData()
+func (rsc *DummyConfigController) AddDefaultHandler(t *testing.T, Handler ComplexData) {
+	d := rsc.GetConfigData(t)
 	if d != nil {
 		handlers := d.DefaultHandlers
 		handlers = append(handlers, Handler)
 		d.DefaultHandlers = handlers
 		rsc.SetConfigData(d)
+	} else {
+		panic("AddHandler - config data was nil")
 	}
 }
 
 //AddHandler this adds a handler to the configuration
-func (rsc *DummyConfigController) AddHandler(Handler ComplexData) {
-	d := rsc.GetConfigData()
+func (rsc *DummyConfigController) AddHandler(t *testing.T, Handler ComplexData) {
+	d := rsc.GetConfigData(t)
 	if d != nil {
 		handlers := d.Handlers
 		handlers = append(handlers, Handler)
 		d.Handlers = handlers
 		rsc.SetConfigData(d)
+	} else {
+		panic("AddHandler - config data was nil")
 	}
 }
 
@@ -260,14 +265,15 @@ func TestLoadConfig(t *testing.T) {
 
 	conf := NewDummyConfigController("")
 
-	if err := conf.Load(); err != nil {
+	if err := conf.Load(t); err != nil {
 		t.Fatalf(`Load(%s) = %v should not error`, conf.Helper.FilePath, err)
 		return
 	}
-	CheckDetails(conf)
+	CheckDetails(t, conf)
 }
 
-func CheckDetails(Config *DummyConfigController) {
+func CheckDetails(t *testing.T, Config *DummyConfigController) {
+	Config.GetAddress(t)
 	/*
 		rs.LogInfof("PrintDetails", "Address: %s", rs.Config.GetAddress())
 		rs.LogInfof("PrintDetails", "Template Filepath: %s", rs.Config.GetTemplatePath())
