@@ -2,8 +2,8 @@ package appconf
 
 import (
 	"fmt"
+	"testing"
 
-	appconf "github.com/eshu0/appconfig/pkg"
 	appconfint "github.com/eshu0/appconfig/pkg/interfaces"
 )
 
@@ -32,7 +32,7 @@ type ConfigData struct {
 //NewDummyConfigController creates new server config
 func NewDummyConfigController(filepath string) *DummyConfigController {
 	dc := &DummyConfigController{}
-	helper := appconf.NewAppConfigHelperWithDefault(filepath, dc.SetServerDefaultConfig)
+	helper := NewAppConfigHelperWithDefault(filepath, dc.SetServerDefaultConfig)
 
 	if helper != nil {
 		dc.Helper = helper
@@ -187,19 +187,19 @@ func (rsc *DummyConfigController) GetHandlersLen() int {
 }
 
 //GetHandlers this gets the handlers from the config
-func (rsc *DummyConfigController) GetHandlers() []Handlers.RESTHandler {
+func (rsc *DummyConfigController) GetHandlers() []ComplexData {
 	d := rsc.GetConfigData()
 	if d == nil {
-		return []Handlers.RESTHandler{}
+		return []ComplexData{}
 	}
 	return d.Handlers
 }
 
 //GetDefaultHandlers this gets the default handlers
-func (rsc *DummyConfigController) GetDefaultHandlers() []Handlers.RESTHandler {
+func (rsc *DummyConfigController) GetDefaultHandlers() []ComplexData {
 	d := rsc.GetConfigData()
 	if d == nil {
-		return []Handlers.RESTHandler{}
+		return []ComplexData{}
 	}
 	return d.DefaultHandlers
 }
@@ -224,7 +224,7 @@ func (rsc *DummyConfigController) GetAddress() string {
 }
 
 //AddDefaultHandler this adds a default handler to the configuration
-func (rsc *DummyConfigController) AddDefaultHandler(Handler Handlers.RESTHandler) {
+func (rsc *DummyConfigController) AddDefaultHandler(Handler ComplexData) {
 	d := rsc.GetConfigData()
 	if d != nil {
 		handlers := d.DefaultHandlers
@@ -235,7 +235,7 @@ func (rsc *DummyConfigController) AddDefaultHandler(Handler Handlers.RESTHandler
 }
 
 //AddHandler this adds a handler to the configuration
-func (rsc *DummyConfigController) AddHandler(Handler Handlers.RESTHandler) {
+func (rsc *DummyConfigController) AddHandler(Handler ComplexData) {
 	d := rsc.GetConfigData()
 	if d != nil {
 		handlers := d.Handlers
@@ -243,4 +243,45 @@ func (rsc *DummyConfigController) AddHandler(Handler Handlers.RESTHandler) {
 		d.Handlers = handlers
 		rsc.SetConfigData(d)
 	}
+}
+
+//SaveConfig saves server config to disk
+func TestSaveConfig(t *testing.T) {
+	conf := NewDummyConfigController("")
+
+	if err := conf.Helper.Save(); err != nil {
+		t.Fatalf(`Save(%s) = %v should not error`, conf.Helper.FilePath, err)
+		return
+	}
+}
+
+//LoadConfig loads server config from disk
+func TestLoadConfig(t *testing.T) {
+
+	conf := NewDummyConfigController("")
+
+	if err := conf.Load(); err != nil {
+		t.Fatalf(`Load(%s) = %v should not error`, conf.Helper.FilePath, err)
+		return
+	}
+	CheckDetails(conf)
+}
+
+func CheckDetails(Config *DummyConfigController) {
+	/*
+		rs.LogInfof("PrintDetails", "Address: %s", rs.Config.GetAddress())
+		rs.LogInfof("PrintDetails", "Template Filepath: %s", rs.Config.GetTemplatePath())
+		rs.LogInfof("PrintDetails", "Template FileTypes: %s", strings.Join(rs.Config.GetTemplateFileTypes(), ","))
+		rs.LogInfof("PrintDetails", "Cache Templates: %t", rs.Config.GetCacheTemplates())
+		rs.LogInfo("PrintDetails", "Handlers: ")
+		for _, handl := range rs.Config.GetHandlers() {
+			rs.LogInfof("PrintDetails", "Handler: %s", handl.MethodName)
+		}
+
+		rs.LogInfo("PrintDetails", "DefaultHandlers: ")
+
+		for _, handl := range rs.Config.GetDefaultHandlers() {
+			rs.LogInfof("PrintDetails", "Default Handler: %s", handl.MethodName)
+		}
+	*/
 }
