@@ -82,6 +82,8 @@ func (ach *AppConfigHelper) Load() error {
 
 	ccat, ok := newconfig.(*AppConfig)
 	fmt.Printf("ccat %v\n", ccat)
+	fmt.Printf("Version %s\n", ccat.Version)
+	fmt.Printf("Data: %v\n", ccat.Data)
 
 	if ok {
 		ach.LoadedConfig = ccat

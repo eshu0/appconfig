@@ -15,6 +15,12 @@ const DefaultFilePath = "./config.json"
 //DefaultVersion the default version of the config
 const DefaultVersion = "0.0.0.1"
 
+//DataItem Dataitem to be stored
+type DataItem struct {
+	Name   string   `json:"names,omitempty"`
+	Values []string `json:"values,omitempty"`
+}
+
 //AppConfig This struct is the configuration for the REST server
 type AppConfig struct {
 	Version string `json:"version,omitempty"`
@@ -23,7 +29,8 @@ type AppConfig struct {
 	appconfint.IAppConfig `json:"-"`
 
 	//Data for storage
-	Data interface{} `json:"data,omitempty"`
+	//Data map[string]*DataItem `json:"data,omitempty"`
+	Data *DataItem `json:"data,omitempty"`
 
 	DefaultFunction func(Config appconfint.IAppConfig) `json:"-"`
 }
@@ -43,7 +50,11 @@ func (Config *AppConfig) GetData() interface{} {
 
 //SetData sets the data for this keyed item
 func (Config *AppConfig) SetData(data interface{}) {
-	Config.Data = data
+	ConfigData, ok1 := data.(*DataItem)
+	if ok1 {
+		//Config.Data[ConfigData.Name] = ConfigData
+		Config.Data = ConfigData
+	}
 }
 
 //SetDefaults sets the defaults based off the function
@@ -83,9 +94,9 @@ func (Config *AppConfig) Load(ConfigFilePath string) (appconfint.IAppConfig, err
 			return nil, fmt.Errorf("Reading '%s' failed with %s ", ConfigFilePath, err1.Error())
 		}
 
-		appconfig := NewAppConfig()
+		appconfig := AppConfig{} //NewAppConfig()
 
-		err2 := json.Unmarshal(bytes, appconfig)
+		err2 := json.Unmarshal(bytes, &appconfig)
 
 		if err2 != nil {
 			return nil, fmt.Errorf("Loading %s failed with %s ", ConfigFilePath, err2.Error())
@@ -95,7 +106,7 @@ func (Config *AppConfig) Load(ConfigFilePath string) (appconfint.IAppConfig, err
 
 		//Log.LogDebugf("LoadFile()", "Read Port %s ", rserverconfig.Port)
 		//rs.Log.LogDebugf("LoadFile()", "Port in config %s ", rs.Config.Port)
-		return appconfig, nil
+		return &appconfig, nil
 	}
 
 	if err != nil {
